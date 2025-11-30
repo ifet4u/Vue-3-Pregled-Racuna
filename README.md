@@ -29,19 +29,22 @@ Projekat naglašava sledeće **Vue** principe:
 * **HTML/CSS (Bootstrap administrativni template Tabler)**
 
 ---
+ 
 
 ### 🚀 Pokretanje Projekta
 
-1.  **Instalacija:**
-    ```bash
-    npm install
-    # ili
-    yarn install
-    ```
-2.  **Pokretanje:**
-    ```bash
-    npm run dev
-    # ili
-    yarn dev
-    ```
----
+Sledite ove korake za lokalno kloniranje i pokretanje projekta:
+
+#### 1. Kloniranje Repozitorijuma
+```bash
+git clone [https://github.com/ifet4u/Vue-3-Pregled-Racuna.git](https://github.com/ifet4u/Vue-3-Pregled-Racuna.git)
+cd Vue-3-Pregled-Racuna
+
+npm install
+# ili
+yarn install
+
+#zatim 
+npm run dev
+# ili
+yarn dev
