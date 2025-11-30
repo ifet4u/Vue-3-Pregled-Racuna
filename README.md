@@ -4,15 +4,15 @@
 
 ### 🚀 Pregled Projekta
 
-Ovaj mini projekat služi kao vežba i demonstracija najboljih praksi u **Vue 3 (Composition API)** za obradu lokalnih podataka.
+Ovaj mini projekat služi kao lična vežba i učenje najboljih praksi u **Vue 3 (Composition API)** za obradu lokalnih podataka.
 
-**Primarni cilj:** Omogućiti korisniku da sigurno, direktno u pretraživaču, učita veliki JSON fajl sa e-računima (Eporezi / ESF) i prikaže njegov sadržaj u tabeli.
+**Primarni cilj:** Omogućiti korisniku da direktno u pretraživaču, učita veliki JSON fajl sa e-računima (Eporezi / ESF) i prikaže njegov sadržaj u tabeli.
 
 ---
 
 ### 💡 Ključne Vue Karakteristike
 
-Projekat naglašava sledeće **Vue** principe:
+Trudim se  da koristim sledeće **Vue** principe:
 
 1.  **Vue 3 Composition API:** Koristimo **`<script setup>`** sintagmu za čist i čitljiv kod.
 2.  **Composable Arhitektura:** Sva logika stanja i obrade podataka je izolovana u eksternom fajlu **`listaRacuna.js`** – ovo je ključno za odvajanje posla (logika) od prikaza (komponenta).
@@ -39,12 +39,15 @@ Sledite ove korake za lokalno kloniranje i pokretanje projekta:
 ```bash
 git clone [https://github.com/ifet4u/Vue-3-Pregled-Racuna.git](https://github.com/ifet4u/Vue-3-Pregled-Racuna.git)
 cd Vue-3-Pregled-Racuna
-
+```
+#### 2. Instalacija zavisnih dodataka
+```bash
 npm install
 # ili
 yarn install
-
-#zatim 
+```
+#### 3. Pokretanje
+```bash
 npm run dev
 # ili
-yarn dev
+yarn dev ```
