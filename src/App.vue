@@ -22,25 +22,25 @@ import {RouterLink, RouterView} from 'vue-router'
       <ul class="navbar-nav">
         <li class="nav-item ">
           <RouterLink class="nav-link" to="/">
-            <span class="nav-link-icon">
-            <i class="ti ti-home"></i>
-          </span>
+      <span class="nav-link-icon">
+      <i class="ti ti-home-2"></i>
+    </span>
             <span class="nav-link-title"> Home </span>
           </RouterLink>
         </li>
         <li class="nav-item ">
           <RouterLink class="nav-link" to="/racuni">
-            <span class="nav-link-icon">
-            <i class="ti ti-home"></i>
-          </span>
+      <span class="nav-link-icon">
+      <i class="ti ti-file-invoice"></i>
+    </span>
             <span class="nav-link-title"> Racuni </span>
           </RouterLink>
         </li>
         <li class="nav-item ">
           <RouterLink class="nav-link" to="/test">
-            <span class="nav-link-icon">
-            <i class="ti ti-home"></i>
-          </span>
+      <span class="nav-link-icon">
+      <i class="ti ti-flask"></i>
+    </span>
             <span class="nav-link-title"> Test </span>
           </RouterLink>
         </li>
