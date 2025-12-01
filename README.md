@@ -60,3 +60,10 @@ yarn dev
 ```
 
 Aplikacija će se pokrenuti na lokalnoj adresi (npr. http://localhost:5173/ )
+
+<img width="774" height="331" alt="image" src="https://github.com/user-attachments/assets/54b8fa62-6eb3-470c-b457-390b8c552d54" />
+
+<img width="747" height="512" alt="image" src="https://github.com/user-attachments/assets/2b6ba460-2a19-4ea0-ba66-256851522578" />
+
+<img width="651" height="677" alt="image" src="https://github.com/user-attachments/assets/08324b5a-d938-4d67-8bc4-122173917754" />
+
