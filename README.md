@@ -2,15 +2,21 @@
 
 ---
 
-### 🚀 Pregled Projekta
+### Pregled Projekta
 
 Ovaj mini projekat služi kao lična vežba i učenje najboljih praksi u **Vue 3 (Composition API)** za obradu lokalnih podataka.
 
 **Primarni cilj:** Omogućiti korisniku da direktno u pretraživaču, učita veliki JSON fajl sa e-računima (Eporezi / ESF) i prikaže njegov sadržaj u tabeli.
 
+**Licenca:** Projekat je besplatan (open source) i otvoren za korišćenje u edukativne svrhe.
+
+**Status:** Ovaj projekat je prvenstveno namenjen za učenje i vežbanje Vue 3 koncepata. Zbog toga nije namenjen za produkcionu upotrebu.
+
+**Kooperacija:** Sve sugestije, predlozi za poboljšanje, korekcije koda ili kooperacija su dobrodošli! Slobodno otvorite Issue ili pošaljite Pull Request na GitHub repozitorijumu.
+
 ---
 
-### 💡 Ključne Vue Karakteristike
+### Ključne Vue Karakteristike
 
 Trudim se  da koristim sledeće **Vue** principe:
 
@@ -22,7 +28,7 @@ Trudim se  da koristim sledeće **Vue** principe:
 
 ---
 
-### 🛠️ Tehnologije
+### Tehnologije
 
 * **Vue 3 (Composition API)**
 * **JavaScript (ES6+)**
@@ -31,9 +37,9 @@ Trudim se  da koristim sledeće **Vue** principe:
 ---
  
 
-### 🚀 Pokretanje Projekta
+### Pokretanje Projekta
 
-Sledite ove korake za lokalno kloniranje i pokretanje projekta:
+Koraci za lokalno kloniranje i pokretanje projekta:
 
 #### 1. Kloniranje Repozitorijuma
 ```bash
@@ -50,4 +56,7 @@ yarn install
 ```bash
 npm run dev
 # ili
-yarn dev ```
+yarn dev 
+```
+
+Aplikacija će se pokrenuti na lokalnoj adresi (npr. http://localhost:5173/ )
