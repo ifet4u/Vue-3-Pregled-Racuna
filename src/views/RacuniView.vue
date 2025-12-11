@@ -46,50 +46,55 @@ const formatirajBroj = (value) => { // preporuka je korisitit arrow funkcije i k
             <input class="form-control" type="file" id="formFile" ref="fileInput"/>
             <button @click="odradiUpload" class="btn btn-primary mt-3">Procitaj fajl</button>
           </p>
-          <table v-else class="table table-hover"> <thead>
-          <tr class="table-light">
-            <th colspan="3" class="text-center fw-bold ">
-              Lista računa
-            </th>
-          </tr>
-          <tr>
-            <th>PFR</th>
-            <th>Datum/vreme</th>
-            <th class="text-center">Iznos</th>
-          </tr>
-          </thead>
+          <table v-else class="table table-hover">
+            <thead>
+            <tr class="table-light">
+              <th colspan="3" class="text-center fw-bold">Lista računa</th>
+            </tr>
+            <tr>
+              <th>PFR</th>
+              <th>Tip / Datum</th>
+              <th class="text-center">Iznos</th>
+            </tr>
+            </thead>
             <tbody>
             <template v-for="rac in listaRacuna" :key="rac.InvoiceNumber">
-              <tr
-                :class="[
-                {'text-danger' :rac.InvoiceType === 'Повраћај' },
-                {'text-primary' :rac.InvoiceType=== 'Аванс' }
-                ]">
+              <tr :class="[
+            {'table-danger': rac.TransactionType === 'Рефундација'},
+            {'table-info': rac.InvoiceType === 'Аванс' && rac.TransactionType !== 'Рефундација'}
+        ]">
                 <td>
-                  <button class="btn btn-sm  w-100"
+                  <button class="btn btn-sm w-100"
                           :class="[
-                                  {'btn-danger' :rac.InvoiceType === 'Повраћај' },
-                                  {'btn-primary' :rac.InvoiceType=== 'Аванс' },
-                                  {'btn-info' :rac.InvoiceType=== 'Обука' }
-                                  ]"
+                      {'btn-danger': rac.TransactionType === 'Рефундација'},
+                      {'btn-primary': rac.InvoiceType === 'Аванс' && rac.TransactionType !== 'Рефундација'},
+                      {'btn-outline-dark': rac.InvoiceType === 'Промет' && rac.TransactionType === 'Продаја'}
+                    ]"
                           data-bs-toggle="modal" data-bs-target="#exampleModal"
                           @click="racun = rac; pfr = rac.InvoiceNumber">
                     {{ rac.InvoiceNumber }}
                   </button>
                 </td>
-                <td>{{ rac.SDCTime_ServerTimeZone }}</td>
-                <td class="text-end">{{ formatirajBroj(rac.TotalAmount) }} din.</td>
+                <td>
+                  <span v-if="rac.TransactionType === 'Рефундација'" class="badge bg-danger me-1">REF</span>
+                  {{ rac.SDCTime_ServerTimeZone }}
+                </td>
+                <td class="text-end fw-bold"
+                    :class="{'text-danger': rac.TotalAmount < 0}">
+                  {{ formatirajBroj(rac.TotalAmount) }} din.
+                </td>
               </tr>
             </template>
             </tbody>
 
-            <tfoot class="table-light">
+            <tfoot class="table-light border-top border-3">
             <tr>
-              <td colspan="2" class="text-end fw-bold">UKUPNO PROMET:</td>
-              <td class="text-end fw-bold">{{ formatirajBroj(ukupanZbirPromet) }} din.</td>
+              <td colspan="2" class="text-end text-uppercase fw-bold">Ukupan Promet:</td>
+              <td class="text-end fw-bold fs-5" :class="{'text-danger': ukupanZbirPromet < 0}">
+                {{ formatirajBroj(ukupanZbirPromet) }} din.
+              </td>
             </tr>
             </tfoot>
-
           </table>
 
           <div class="modal" id="exampleModal" tabindex="-1">
