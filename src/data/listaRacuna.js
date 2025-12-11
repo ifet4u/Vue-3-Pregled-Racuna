@@ -5,7 +5,11 @@ const praznaListaRacuna = computed(() =>{
 })
 const errorLoadingRacuna = ref(null);
 const loadRacuni = ref(null);
-
+const ukupanZbirPromet = computed(()=>{
+  return listaRacuna.value
+    .filter(racun => racun.InvoiceType ===  'Промет') // filtriraj samo promet, kasnije dodaj niz prometa
+    .reduce((zbir,racun) => zbir + (racun.TotalAmount || 0),0) // saberi
+})
 const obrisiListuRacuna = () => {
     confirm("Da li ste sigurni da želite obrisati listu računa?") ?
     listaRacuna.value = [] : null;
@@ -57,4 +61,4 @@ const uploadjujFajl = (fileInput) => { // Uklanjamo (event) jer citamo iz ref-a
 
   reader.readAsText(file);
 };
-export { listaRacuna,praznaListaRacuna, errorLoadingRacuna, loadRacuni,uploadjujFajl, obrisiListuRacuna };
+export { listaRacuna,praznaListaRacuna, errorLoadingRacuna, loadRacuni,uploadjujFajl, obrisiListuRacuna,ukupanZbirPromet };

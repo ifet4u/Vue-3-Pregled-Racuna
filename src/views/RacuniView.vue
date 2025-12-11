@@ -1,3 +1,31 @@
+<script setup>
+import {ref} from "vue";
+import PregledRacuna from "@/components/PregledRacuna.vue";
+import {
+  listaRacuna,
+  praznaListaRacuna,
+  errorLoadingRacuna,
+  loadRacuni,
+  uploadjujFajl,
+  obrisiListuRacuna,
+  ukupanZbirPromet
+} from "@/data/listaRacuna.js";
+
+const racun = ref(null);
+const pfr = ref('');
+// **ISPRAVKA 1:** Deklarisanje reference za input polje
+const fileInput = ref(null);
+const odradiUpload = () => { // na ovakav nacin se poziva funkcija izvan skripta sa parametrom
+  uploadjujFajl(fileInput);
+}
+const formatirajBroj = (value) => { // preporuka je korisitit arrow funkcije i konstante umeto pravih funkcija
+  if (value === null || value === undefined) return ''
+  return new Intl.NumberFormat('sr-RS', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(value)
+}
+</script>
 <template>
   <div class="about container">
     <div class="row">
@@ -18,19 +46,18 @@
             <input class="form-control" type="file" id="formFile" ref="fileInput"/>
             <button @click="odradiUpload" class="btn btn-primary mt-3">Procitaj fajl</button>
           </p>
-          <table v-else>
-            <thead>
-            <tr class="table-light">
-              <th colspan="3" class="text-center fw-bold ">
-                Lista računa
-              </th>
-            </tr>
-            <tr>
-              <th>PFR</th>
-              <th>Datum/vreme</th>
-              <th class="text-center">Iznos</th>
-            </tr>
-            </thead>
+          <table v-else class="table table-hover"> <thead>
+          <tr class="table-light">
+            <th colspan="3" class="text-center fw-bold ">
+              Lista računa
+            </th>
+          </tr>
+          <tr>
+            <th>PFR</th>
+            <th>Datum/vreme</th>
+            <th class="text-center">Iznos</th>
+          </tr>
+          </thead>
             <tbody>
             <template v-for="rac in listaRacuna" :key="rac.InvoiceNumber">
               <tr
@@ -42,7 +69,8 @@
                   <button class="btn btn-sm  w-100"
                           :class="[
                                   {'btn-danger' :rac.InvoiceType === 'Повраћај' },
-                                  {'btn-primary' :rac.InvoiceType=== 'Аванс' }
+                                  {'btn-primary' :rac.InvoiceType=== 'Аванс' },
+                                  {'btn-info' :rac.InvoiceType=== 'Обука' }
                                   ]"
                           data-bs-toggle="modal" data-bs-target="#exampleModal"
                           @click="racun = rac; pfr = rac.InvoiceNumber">
@@ -54,7 +82,16 @@
               </tr>
             </template>
             </tbody>
+
+            <tfoot class="table-light">
+            <tr>
+              <td colspan="2" class="text-end fw-bold">UKUPNO PROMET:</td>
+              <td class="text-end fw-bold">{{ formatirajBroj(ukupanZbirPromet) }} din.</td>
+            </tr>
+            </tfoot>
+
           </table>
+
           <div class="modal" id="exampleModal" tabindex="-1">
             <div class="modal-dialog" role="document">
               <div class="modal-content">
@@ -80,33 +117,7 @@
     </div>
   </div>
 </template>
-<script setup>
-import {ref} from "vue";
-import PregledRacuna from "@/components/PregledRacuna.vue";
-import {
-  listaRacuna,
-  praznaListaRacuna,
-  errorLoadingRacuna,
-  loadRacuni,
-  uploadjujFajl,
-  obrisiListuRacuna
-} from "@/data/listaRacuna.js";
 
-const racun = ref(null);
-const pfr = ref('');
-// **ISPRAVKA 1:** Deklarisanje reference za input polje
-const fileInput = ref(null);
-const odradiUpload = () => { // na ovakav nacin se poziva funkcija izvan skripta sa parametrom
-  uploadjujFajl(fileInput);
-}
-const formatirajBroj = (value) => { // preporuka je korisitit arrow funkcije i konstante umeto pravih funkcija
-  if (value === null || value === undefined) return ''
-  return new Intl.NumberFormat('sr-RS', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  }).format(value)
-}
-</script>
 <!--{-->
 <!--"InvoiceNumber":"VPS2YJ5W-VPS2YJ5W-2932",-->
 <!--"TIN":"100502068",-->
