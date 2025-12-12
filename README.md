@@ -16,18 +16,6 @@ Ovaj mini projekat služi kao lična vežba i učenje najboljih praksi u **Vue 3
 
 ---
 
-### Ključne Vue Karakteristike
-
-Trudim se  da koristim sledeće **Vue** principe:
-
-1.  **Vue 3 Composition API:** Koristimo **`<script setup>`** sintagmu za čist i čitljiv kod.
-2.  **Composable Arhitektura:** Sva logika stanja i obrade podataka je izolovana u eksternom fajlu **`listaRacuna.js`** – ovo je ključno za odvajanje posla (logika) od prikaza (komponenta).
-3.  **Reaktivnost:** Koristimo **`ref`** i **`computed`** za efikasno upravljanje stanjem.
-4.  **Asinhrono Čitanje:** Koristi se **`FileReader` API** za neblokirajuće i sigurno učitavanje sadržaja JSON fajla sa korisničkog uređaja.
-5.  **Template Refs:** Korišćenje **`ref="fileInput"`** za dobijanje direktnog pristupa DOM elementu `<input type="file">` iz Vue koda.
-
----
-
 ### Tehnologije
 
 * **Vue 3 (Composition API)**
@@ -39,14 +27,13 @@ Trudim se  da koristim sledeće **Vue** principe:
 
 ### Pokretanje Projekta
 
-Koraci za lokalno kloniranje i pokretanje projekta:
 
 #### 1. Kloniranje Repozitorijuma
 ```bash
 git clone https://github.com/ifet4u/Vue-3-Pregled-Racuna.git
 cd Vue-3-Pregled-Racuna
 ```
-#### 2. Instalacija zavisnih dodataka
+#### 2. Instalacija zavisnih biblioteka
 ```bash
 npm install
 # ili
