@@ -2,14 +2,14 @@
 import { ref } from 'vue';
 import { RouterLink, RouterView } from 'vue-router';
 
-const isMenuOpen = ref(false);
+const otvorenMeni = ref(false);
 
-const toggleMenu = () => {
-  isMenuOpen.value = !isMenuOpen.value;
+const toggleMeni = () => {
+  otvorenMeni.value = !otvorenMeni.value;
 };
 
-const closeMenu = () => {
-  isMenuOpen.value = false;
+const closeMeni = () => {
+  otvorenMeni.value = false;
 };
 </script>
 
@@ -21,8 +21,8 @@ const closeMenu = () => {
         <button
           class="navbar-toggler"
           type="button"
-          @click="toggleMenu"
-          :aria-expanded="isMenuOpen"
+          @click="toggleMeni"
+          :aria-expanded="otvorenMeni"
           aria-label="Toggle navigation"
         >
           <span class="navbar-toggler-icon"></span>
@@ -30,15 +30,15 @@ const closeMenu = () => {
 
         <a href="#" class="navbar-brand navbar-brand-autodark me-3">
           <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="25" height="25"/>
-          <span class="ms-2">Vue JS</span>
+          <span class="ms-2">ESF Pregled</span>
         </a>
 
-        <div class="collapse navbar-collapse" :class="{ 'show': isMenuOpen }" id="navbar-menu">
+        <div class="collapse navbar-collapse" :class="{ 'show': otvorenMeni }" id="navbar-menu">
           <div class="d-flex flex-column flex-md-row flex-fill align-items-stretch align-items-md-center">
             <ul class="navbar-nav">
 
               <li class="nav-item">
-                <RouterLink class="nav-link" to="/" @click="closeMenu">
+                <RouterLink class="nav-link" to="/" @click="closeMeni">
                   <span class="nav-link-icon">
                     <i class="ti ti-home-2"></i>
                   </span>
@@ -47,7 +47,7 @@ const closeMenu = () => {
               </li>
 
               <li class="nav-item">
-                <RouterLink class="nav-link" to="/racuni" @click="closeMenu">
+                <RouterLink class="nav-link" to="/racuni" @click="closeMeni">
                   <span class="nav-link-icon">
                     <i class="ti ti-file-invoice"></i>
                   </span>
@@ -56,7 +56,7 @@ const closeMenu = () => {
               </li>
 
               <li class="nav-item">
-                <RouterLink class="nav-link" to="/test" @click="closeMenu">
+                <RouterLink class="nav-link" to="/test" @click="closeMeni">
                   <span class="nav-link-icon">
                     <i class="ti ti-flask"></i>
                   </span>
