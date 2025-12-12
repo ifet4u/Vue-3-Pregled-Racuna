@@ -178,19 +178,22 @@ onMounted(() => {
         </div>
 
       </div>
-
-      <div class="card">
-        <div class="card-header d-flex justify-content-between">
+      <div class="card card-body mb-4">
+        <label class="row">
+          <span class="col">Prikaži Artikle</span>
+          <span class="col-auto">
+              <label class="form-check form-check-single form-switch">
+              <input class="form-check-input" type="checkbox" checked="" v-model="detalji">
+               </label>
+              </span>
+        </label>
+      </div>
+      <div class="card" v-if="detalji">
+        <div class="card-header ">
           <h3 class="card-title">Pregled prodatih artikala (Grupisano)</h3>
-          <button
-            class="btn "
-            :class="{'btn-danger': detalji, 'btn-primary': !detalji}"
-            @click="detalji = !detalji">
-            {{ detalji ? 'Sakrij' : 'Prikazi' }}
-          </button>
         </div>
 
-        <div class="table-responsive" v-if="detalji">
+        <div class="table-responsive" >
           <table class="table card-table table-vcenter text-nowrap datatable">
             <thead>
             <tr>

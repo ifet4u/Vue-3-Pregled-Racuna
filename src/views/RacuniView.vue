@@ -12,7 +12,7 @@ const pfrModal = ref('');
 const isLoading = ref(false);
 const uploadStatus = ref(null);
 const fileInput = ref(null);
-
+const pokaziRacune = ref(false)
 // --- FORMATIRANJE ---
 const formatirajBroj = (value) => {
   if (value === null || value === undefined) return '';
@@ -123,7 +123,7 @@ onMounted(() => {
 
       <div class="col-md-6">
         <div class="card h-100">
-          <div class="card-header">
+          <div class="card-header ">
             <h3 class="card-title">Uvoz novih računa</h3>
           </div>
           <div class="card-body">
@@ -180,14 +180,22 @@ onMounted(() => {
         </div>
       </div>
     </div>
-
-    <div class="card">
+    <div class="card card-body mb-4">
+      <label class="row">
+        <span class="col">Prikaži Racune</span>
+        <span class="col-auto">
+              <label class="form-check form-check-single form-switch">
+              <input class="form-check-input" type="checkbox" checked="" v-model="pokaziRacune">
+               </label>
+              </span>
+      </label>
+    </div>
+    <div class="card" v-if="pokaziRacune">
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-center mb-3">
           <h3 class="card-title">Pregled svih računa u bazi</h3>
           <span class="badge bg-blue-lt">Ukupno: {{ racuni.length }}</span>
         </div>
-
         <div v-if="isLoading" class="text-center py-5">
           <div class="spinner-border text-primary" role="status"></div>
           <div class="mt-2">Učitavanje podataka iz baze...</div>
