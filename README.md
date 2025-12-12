@@ -43,7 +43,7 @@ Koraci za lokalno kloniranje i pokretanje projekta:
 
 #### 1. Kloniranje Repozitorijuma
 ```bash
-git clone [https://github.com/ifet4u/Vue-3-Pregled-Racuna.git](https://github.com/ifet4u/Vue-3-Pregled-Racuna.git)
+git clone https://github.com/ifet4u/Vue-3-Pregled-Racuna.git
 cd Vue-3-Pregled-Racuna
 ```
 #### 2. Instalacija zavisnih dodataka
