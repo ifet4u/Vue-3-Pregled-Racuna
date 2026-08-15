@@ -1,15 +1,6 @@
-import {db} from "@/data/db.js";
+import { db } from "@/data/db.js";
+import { konvertujDatum } from "@/utils/invoiceHelpers.js";
 
-const konvertujDatum = (datum) => {
-  if (!datum) return new Date();
-  const [d, t] = datum.split(' ');
-  const deloviDatuma = d.split('.');
-  const day = deloviDatuma[0];
-  const month = deloviDatuma[1];
-  const year = deloviDatuma[2];
-
-  return new Date(`${year}-${month}-${day}T${t}`);
-}
 
 export const uvozRacuna = async (fajl, jsonData) => {
   if (!jsonData.length) return {success: false, message: "Nema podataka za uvoz."};

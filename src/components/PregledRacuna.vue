@@ -1,7 +1,8 @@
 <script setup>
+import { ref } from "vue";
 import { isExcludedInvoice } from "@/utils/invoiceHelpers.js";
 
-defineProps({
+const props = defineProps({
   data: {
     type: Object,
     required: true
@@ -19,6 +20,20 @@ const formatBroj = (vrednost) => {
   return new Intl.NumberFormat('sr-RS', {
     maximumFractionDigits: 4
   }).format(vrednost);
+};
+
+const kopiranoState = ref(false);
+const kopirajPodatkeZaVerifikaciju = () => {
+  const tekst = `PFR Broj: ${props.data.InvoiceNumber || props.data.invoiceNumber}
+Vreme: ${props.data.SDCTime_ServerTimeZone}
+Brojač: ${props.data.InvoiceCounter}
+Ukupan Iznos: ${props.data.TotalAmount}`;
+  navigator.clipboard.writeText(tekst).then(() => {
+    kopiranoState.value = true;
+    setTimeout(() => {
+      kopiranoState.value = false;
+    }, 2000);
+  });
 };
 </script>
 
@@ -117,31 +132,20 @@ const formatBroj = (vrednost) => {
           <div><strong>Potpis:</strong> {{ data.SignedBy }}</div>
         </div>
 
-        <!-- Mock QR Code -->
-        <div class="qr-mock-container my-3 d-flex flex-column align-items-center">
-          <div class="qr-mock-code">
-            <svg width="110" height="110" viewBox="0 0 100 100" class="qr-svg">
-              <path d="M0,0 h30 v10 h-20 v20 h-10 z M100,0 h-30 v10 h20 v20 h10 z M0,100 h30 v-10 h-20 v-20 h-10 z M100,100 h-30 v-10 h20 v-20 h10 z" fill="#333"/>
-              <!-- Mock random pixel blocks for QR feel -->
-              <rect x="15" y="15" width="20" height="20" fill="#333"/>
-              <rect x="20" y="20" width="10" height="10" fill="#fff"/>
-              <rect x="65" y="15" width="20" height="20" fill="#333"/>
-              <rect x="70" y="20" width="10" height="10" fill="#fff"/>
-              <rect x="15" y="65" width="20" height="20" fill="#333"/>
-              <rect x="20" y="70" width="10" height="10" fill="#fff"/>
-              
-              <!-- Center elements and random dots -->
-              <rect x="45" y="45" width="10" height="10" fill="#333"/>
-              <rect x="55" y="35" width="15" height="5" fill="#333"/>
-              <rect x="35" y="55" width="5" height="15" fill="#333"/>
-              <rect x="45" y="65" width="15" height="15" fill="#333"/>
-              <rect x="65" y="45" width="10" height="20" fill="#333"/>
-              <rect x="35" y="35" width="5" height="5" fill="#333"/>
-              <rect x="45" y="20" width="10" height="5" fill="#333"/>
-              <rect x="20" y="45" width="5" height="10" fill="#333"/>
-            </svg>
-          </div>
-          <span class="qr-label mt-1 text-uppercase text-center">Skenirajte za proveru računa</span>
+        <!-- Link i kopiranje za proveru na Poreskoj -->
+        <div class="my-3 text-center d-print-none px-2">
+          <a href="https://suf.purs.gov.rs/verify/" target="_blank" class="btn btn-outline-dark btn-sm w-100 mb-2">
+            <i class="ti ti-external-link me-1"></i> Proveri račun na portalu Poreske
+          </a>
+          
+          <button @click="kopirajPodatkeZaVerifikaciju" class="btn btn-outline-secondary btn-sm w-100 mb-1" :class="{ 'btn-success text-white': kopiranoState }">
+            <i class="ti" :class="kopiranoState ? 'ti-check' : 'ti-copy'"></i>
+            {{ kopiranoState ? 'Kopirano u memoriju!' : 'Kopiraj podatke za proveru' }}
+          </button>
+          
+          <small class="text-muted d-block text-xs mt-1" style="font-size: 0.65rem;">
+            Kopira: PFR broj, vreme, brojač i iznos za unos na portalu.
+          </small>
         </div>
 
         <div class="divider-dashed"></div>

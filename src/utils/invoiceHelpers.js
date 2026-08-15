@@ -1,4 +1,34 @@
 /**
+ * Konvertuje datum iz formata "DD.MM.YYYY. HH:mm:ss" (kakav koristi poreska)
+ * u standardan JS Date objekat sa ispravnim paddingom za jednocifrene sate/minute/sekunde.
+ * @param {string} datumString
+ * @returns {Date}
+ */
+export const konvertujDatum = (datumString) => {
+  if (!datumString) return new Date();
+  const parts = datumString.trim().split(' ');
+  if (parts.length < 2) return new Date();
+  const [d, t] = parts;
+  
+  const deloviDatuma = d.split('.');
+  const day = String(deloviDatuma[0]).padStart(2, '0');
+  const month = String(deloviDatuma[1]).padStart(2, '0');
+  const year = deloviDatuma[2];
+
+  const deloviVremena = t.split(':');
+  const hour = String(deloviVremena[0]).padStart(2, '0');
+  const minute = String(deloviVremena[1]).padStart(2, '0');
+  const second = String(deloviVremena[2] || '00').substring(0, 2).padStart(2, '0');
+
+  const isoString = `${year}-${month}-${day}T${hour}:${minute}:${second}`;
+  const parsedDate = new Date(isoString);
+  if (isNaN(parsedDate.getTime())) {
+    return new Date(datumString); // fallback
+  }
+  return parsedDate;
+};
+
+/**
  * Proverava da li je račun isključen iz finansijskih obračuna
  * (kopije, obuke, predračuni).
  * @param {Object} racun 
@@ -6,7 +36,7 @@
  */
 export const isExcludedInvoice = (racun) => {
   if (!racun || !racun.InvoiceType) return false;
-  return ['Копија', 'Обука', 'Предраčuн'].includes(racun.InvoiceType);
+  return ['Копија', 'Обука', 'Предрачун'].includes(racun.InvoiceType);
 };
 
 /**

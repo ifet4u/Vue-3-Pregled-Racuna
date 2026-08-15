@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue';
-import { db } from "@/data/db.js";
+import { db, popraviNeispravneDatume } from "@/data/db.js";
 import { isExcludedInvoice, getNetInvoiceAmount, getRefundAmount } from "@/utils/invoiceHelpers.js";
 import ApexChart from "vue3-apexcharts";
 
@@ -112,7 +112,15 @@ const ucitajDashboardPodatke = async () => {
     if (end) end.setHours(23, 59, 59, 999);
 
     sviRacuni.forEach(racun => {
-      const datum = racun.date;
+      let datum = racun.date;
+      
+      // Defanzivna provera i konverzija
+      if (!(datum instanceof Date) || isNaN(datum.getTime())) {
+        datum = new Date(datum);
+      }
+      if (isNaN(datum.getTime())) {
+        return; // Preskačemo račun sa neispravnim datumom
+      }
       
       // Filtriranje po datumu
       if (start && datum < start) return;
@@ -327,7 +335,8 @@ const taxChartOptions = computed(() => ({
 
 const taxChartSeries = computed(() => taxChartData.value.values);
 
-onMounted(() => {
+onMounted(async () => {
+  await popraviNeispravneDatume();
   ucitajDashboardPodatke();
 });
 
