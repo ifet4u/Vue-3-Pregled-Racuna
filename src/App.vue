@@ -55,14 +55,7 @@ const closeMeni = () => {
                 </RouterLink>
               </li>
 
-              <li class="nav-item">
-                <RouterLink class="nav-link" to="/test" @click="closeMeni">
-                  <span class="nav-link-icon">
-                    <i class="ti ti-flask"></i>
-                  </span>
-                  <span class="nav-link-title"> Test </span>
-                </RouterLink>
-              </li>
+
 
             </ul>
           </div>

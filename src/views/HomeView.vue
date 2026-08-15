@@ -6,19 +6,69 @@ import ApexChart from "vue3-apexcharts";
 
 // --- STATE ---
 const isLoading = ref(true);
+const datumOd = ref('');
+const datumDo = ref('');
 const stats = ref({
   ukupanPromet: 0,
   refundacije: 0,
   brojRacuna: 0,
   brojFajlova: 0,
-  brojIskljucenih: 0
+  brojIskljucenih: 0,
+  brojProdaja: 0,
+  brojRefundacija: 0
 });
 const detalji = ref(true); // Prikaži artikle podrazumevano
 const najprodavanijiArtikli = ref([]);
+const pibObveznika = ref('');
+const lokacijaObveznika = ref('');
 
-// --- FILTERS ---
-const datumOd = ref('');
-const datumDo = ref('');
+// --- COMPUTED ZA IZVEŠTAJ ---
+const tipIzvestaja = computed(() => {
+  if (!datumOd.value && !datumDo.value) {
+    return "PERIODIČNI FISKALNI IZVEŠTAJ (Sve vreme)";
+  }
+  if (datumOd.value && datumOd.value === datumDo.value) {
+    return "DNEVNI FISKALNI IZVEŠTAJ";
+  }
+  return "PERIODIČNI FISKALNI IZVEŠTAJ";
+});
+
+const tipTasteraIzvestaja = computed(() => {
+  if (datumOd.value && datumDo.value && datumOd.value === datumDo.value) {
+    return "dnevni izveštaj";
+  }
+  return "periodični izveštaj";
+});
+
+const periodIzvestajaText = computed(() => {
+  if (!datumOd.value && !datumDo.value) {
+    return "Za ceo period poslovanja";
+  }
+  
+  const formatirajD = (dStr) => {
+    if (!dStr) return '';
+    const [y, m, d] = dStr.split('-');
+    return `${d}.${m}.${y}.`;
+  };
+
+  if (datumOd.value && datumDo.value && datumOd.value === datumDo.value) {
+    return `Za dan: ${formatirajD(datumOd.value)}`;
+  }
+  
+  if (datumOd.value && datumDo.value) {
+    return `Za period: ${formatirajD(datumOd.value)} - ${formatirajD(datumDo.value)}`;
+  }
+  
+  if (datumOd.value) {
+    return `Od dana: ${formatirajD(datumOd.value)}`;
+  }
+  
+  return `Do dana: ${formatirajD(datumDo.value)}`;
+});
+
+const stampajIzvestaj = () => {
+  window.print();
+};
 
 // --- CHARTS STATE ---
 const trendChartData = ref({ labels: [], values: [] });
@@ -95,10 +145,17 @@ const ucitajDashboardPodatke = async () => {
     // Izvlačimo sve račune za filtriranje i grupisanje
     const sviRacuni = await db.racuni.toArray();
 
+    if (sviRacuni.length > 0) {
+      pibObveznika.value = sviRacuni[0].TIN || '';
+      lokacijaObveznika.value = sviRacuni[0].LocationName || '';
+    }
+
     let promet = 0;
     let refund = 0;
     stats.value.brojRacuna = 0;
     stats.value.brojIskljucenih = 0;
+    stats.value.brojProdaja = 0;
+    stats.value.brojRefundacija = 0;
 
     const mapaArtikala = new Map();
     const mapaTrenda = new Map();
@@ -139,6 +196,12 @@ const ucitajDashboardPodatke = async () => {
 
       promet += netoIznos;
       refund += refundIznos;
+
+      if (racun.TransactionType === 'Рефундација' || netoIznos < 0) {
+        stats.value.brojRefundacija++;
+      } else {
+        stats.value.brojProdaja++;
+      }
 
       // Trend: grupisanje po danu (dan-mesec-godina format)
       const danKljuc = datum.toISOString().split('T')[0];
@@ -348,18 +411,22 @@ watch([datumOd, datumDo], () => {
 
 <template>
   <div class="container-xl">
-    <!-- PAGE HEADER -->
-    <div class="page-header d-print-none mb-4">
-      <div class="row align-items-center">
-        <div class="col">
-          <div class="page-pretitle">Pregled</div>
-          <h2 class="page-title">Finansijski Dashboard</h2>
-        </div>
-        <div class="col-auto ms-auto">
-          <div class="btn-list">
-            <router-link to="/racuni" class="btn btn-primary">
-              <i class="ti ti-upload me-2"></i> Uvoz i istorija
-            </router-link>
+    <div class="d-print-none">
+      <!-- PAGE HEADER -->
+      <div class="page-header mb-4">
+        <div class="row align-items-center">
+          <div class="col">
+            <div class="page-pretitle">Pregled</div>
+            <h2 class="page-title">Finansijski Dashboard</h2>
+          </div>
+          <div class="col-auto ms-auto">
+            <div class="btn-list">
+              <button @click="stampajIzvestaj" class="btn btn-outline-primary" :disabled="stats.brojRacuna === 0">
+                <i class="ti ti-printer me-2"></i>Štampaj {{ tipTasteraIzvestaja }}
+              </button>
+              <router-link to="/racuni" class="btn btn-primary">
+                <i class="ti ti-upload me-2"></i> Uvoz i istorija
+              </router-link>
           </div>
         </div>
       </div>
@@ -616,6 +683,108 @@ watch([datumOd, datumDo], () => {
         </div>
       </div>
     </div>
+    
+    <!-- Zatvaranje d-print-none omotača ekrana -->
+    </div>
+    
+    <!-- ŠTAMPANI FISKALNI IZVEŠTAJ (VIDLJIV SAMO NA ŠTAMPI) -->
+    <div class="d-none d-print-block print-report-container">
+      <div class="print-report-paper">
+        <!-- Obveznik -->
+        <div class="text-center mb-3">
+          <h3 class="merchant-name">{{ lokacijaObveznika || 'LOKACIJA OBVEZNIKA' }}</h3>
+          <p class="merchant-info">
+            <strong>PIB:</strong> {{ pibObveznika || 'N/A' }}
+          </p>
+          <div class="divider-dashed-print"></div>
+          <h4 class="receipt-title">{{ tipIzvestaja }}</h4>
+          <div class="receipt-type text-uppercase fw-bold text-sm">
+            {{ periodIzvestajaText }}
+          </div>
+          <div class="small text-muted mt-1 font-monospace" style="font-size: 0.75rem;">
+            Vreme štampe: {{ new Date().toLocaleString('sr-RS') }}
+          </div>
+          <div class="divider-dashed-print"></div>
+        </div>
+
+        <!-- Finansijski rezime -->
+        <div class="mb-3 font-monospace">
+          <div class="d-flex justify-content-between">
+            <span>PROMET PRODAJE (+):</span>
+            <strong>{{ formatValuta(stats.ukupanPromet + stats.refundacije) }}</strong>
+          </div>
+          <div class="d-flex justify-content-between text-danger">
+            <span>POVRAĆAJ / REFUNDACIJA (-):</span>
+            <strong>-{{ formatValuta(stats.refundacije) }}</strong>
+          </div>
+          <div class="divider-dashed-print"></div>
+          <div class="d-flex justify-content-between fs-3 fw-bold">
+            <span>NETO PROMET:</span>
+            <span>{{ formatValuta(stats.ukupanPromet) }}</span>
+          </div>
+        </div>
+
+        <div class="divider-dashed-print"></div>
+
+        <!-- Porez po stopama -->
+        <div class="mb-3 font-monospace text-sm">
+          <h5 class="text-uppercase fw-bold mb-2">Porezi po poreskim stopama</h5>
+          <div class="d-flex justify-content-between fw-bold border-bottom pb-1 mb-1" style="font-size: 0.75rem;">
+            <span>Stopa / Kategorija</span>
+            <span>Neto PDV Iznos</span>
+          </div>
+          <div v-for="(val, idx) in taxChartData.values" :key="idx" class="d-flex justify-content-between text-muted py-1" style="font-size: 0.8rem;">
+            <span>{{ taxChartData.labels[idx] }}</span>
+            <span>{{ formatValuta(val) }}</span>
+          </div>
+          <div v-if="taxChartData.values.length === 0" class="text-center py-2 text-muted">
+            Nema podataka o porezima.
+          </div>
+        </div>
+
+        <div class="divider-dashed-print"></div>
+
+        <!-- Načini plaćanja -->
+        <div class="mb-3 font-monospace text-sm">
+          <h5 class="text-uppercase fw-bold mb-2">Uplate po načinima plaćanja</h5>
+          <div v-for="(val, idx) in placanjeChartData.values" :key="idx" class="d-flex justify-content-between py-1" style="font-size: 0.8rem;">
+            <span>Uplata: {{ placanjeChartData.labels[idx] }}</span>
+            <strong>{{ formatValuta(val) }}</strong>
+          </div>
+          <div v-if="placanjeChartData.values.length === 0" class="text-center py-2 text-muted">
+            Nema podataka o uplatama.
+          </div>
+        </div>
+
+        <div class="divider-dashed-print"></div>
+
+        <!-- Statistika dokumenata -->
+        <div class="mb-3 font-monospace text-xs text-muted">
+          <h5 class="text-uppercase fw-bold mb-2 text-dark">Statistika dokumenata</h5>
+          <div class="d-flex justify-content-between">
+            <span>Broj prodajnih računa:</span>
+            <span>{{ stats.brojProdaja }}</span>
+          </div>
+          <div class="d-flex justify-content-between">
+            <span>Broj refundacija:</span>
+            <span>{{ stats.brojRefundacija }}</span>
+          </div>
+          <div class="d-flex justify-content-between fw-bold text-dark border-top pt-1 mt-1">
+            <span>Ukupno obrađenih računa:</span>
+            <span>{{ stats.brojRacuna }}</span>
+          </div>
+          <div class="d-flex justify-content-between mt-1" v-if="stats.brojIskljucenih > 0">
+            <span>Ignorisano (Kopije/Obuka):</span>
+            <span>{{ stats.brojIskljucenih }}</span>
+          </div>
+        </div>
+
+        <div class="divider-dashed-print"></div>
+        <p class="text-center fw-bold mt-3 font-monospace text-uppercase" style="letter-spacing: 2px;">
+          Kraj Izveštaja
+        </p>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -629,5 +798,79 @@ watch([datumOd, datumDo], () => {
 }
 .btn-group .btn {
   padding: 0.4rem 0.6rem;
+}
+
+/* Stilovi za štampu izveštaja */
+.print-report-container {
+  display: none;
+}
+
+@media print {
+  /* Sakrij standardni ekran */
+  .d-print-none,
+  header,
+  .navbar,
+  .page-header,
+  .card,
+  .btn-list,
+  .btn,
+  footer {
+    display: none !important;
+  }
+
+  body {
+    background-color: white !important;
+    color: black !important;
+    font-size: 12px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .d-print-block {
+    display: block !important;
+  }
+
+  .print-report-container {
+    display: flex !important;
+    justify-content: center;
+    width: 100%;
+    background-color: white;
+  }
+
+  .print-report-paper {
+    width: 100%;
+    max-width: 440px;
+    padding: 10px;
+    font-family: 'Courier New', Courier, monospace;
+    color: #000;
+  }
+
+  .merchant-name {
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .merchant-info {
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+  }
+
+  .receipt-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin: 6px 0;
+  }
+
+  .receipt-type {
+    font-size: 0.85rem;
+  }
+
+  .divider-dashed-print {
+    border-top: 1px dashed #000 !important;
+    margin: 12px 0;
+    height: 0;
+  }
 }
 </style>
